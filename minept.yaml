@@ -1,0 +1,18 @@
+# minept — 自动生成自 PT-depiler（tools/convert-definitions.go）。
+# schema: meantorrent。已接入通用/专用适配器，待真实站点校准。
+# dead site retained; reference projects expose no executable user_info/search selectors beyond retained metadata.
+
+aka:
+    - MINE
+    - 地雷站
+    - 矿站
+dead: true
+description: 国内首个使用meanTorrent架构站点
+id: minept
+name: MINE.pt
+schema: meantorrent
+tags:
+    - 影视
+    - 综合
+urls:
+    - https://mine.pt/

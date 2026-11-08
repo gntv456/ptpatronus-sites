@@ -1,0 +1,105 @@
+# gtorg — 搜索 selector 与 user_info.pages 已按 PT-depiler 结构迁移，并由 GenericHTML mock 覆盖；真实站点仍建议 live smoke。
+dead: true
+id: gtorg
+level_requirements:
+    - id: 1
+      name: Member
+      ratio: 0.4
+    - id: 2
+      name: Poweruser
+      privilege: 'Access to: Online Users, Tracker info'
+      ratio: 1.05
+      uploaded: 50GB
+    - id: 3
+      name: Extrauser
+      privilege: 'Access to: Online Users, Tracker info, Requests, Top 10 and Users'
+      ratio: 2
+      uploaded: 250GB
+name: Gay-Torrents.Org
+search_entry: /torrents_beta.php
+search_param: search
+selectors:
+    fields:
+        category:
+            selector: div.categoryNew a
+        completed:
+            filters:
+                - name: parse_number
+            selector: div.downloadTimes a
+        detail:
+            attr: href
+            selector: a.torrent_link
+        download:
+            attr: href
+            selector: a.downloadLink
+        leechers:
+            filters:
+                - name: parse_number
+            selector: div.downloadPeers a.red
+        seeders:
+            filters:
+                - name: parse_number
+            selector: div.downloadPeers a.green
+        size:
+            filters:
+                - name: parse_size
+            selector: div.size
+        time:
+            filters:
+                - args: "(?i)^\\s*(?:on\\s+)?(.+)$"
+                  name: regexp
+                - name: trim
+                - name: parse_time
+            selector: div.date > div
+        title:
+            selector: a.torrent_link
+    rows:
+        selector: div.torrentsContainer > div.torrent
+tags:
+    - 成人
+urls:
+    - https://gay-torrents.org/
+user_info:
+    pages:
+        - path: /index.php
+          fields:
+            id:
+                selector: "a[href*='usercp.php']:first"
+                attr: href
+                filters:
+                    - name: queryparam
+                      args: uid
+            bonus:
+                selector: "a[href*='seedbonus']:first"
+                filters:
+                    - name: parse_number
+            seeding:
+                selector: "span[title='Seed']"
+                filters:
+                    - name: parse_number
+        - path: /usercp.php
+          params:
+            uid: "{id}"
+          fields:
+            name:
+                selector: "td:contains('User') + td"
+            level:
+                selector: "td:contains('Rank') + td"
+            downloaded:
+                selector: "td:contains('Downloaded') + td"
+                filters:
+                    - name: parse_size
+            uploaded:
+                selector: "td:contains('Uploaded') + td"
+                filters:
+                    - name: parse_size
+            ratio:
+                selector: "td:contains('Ratio') + td"
+                filters:
+                    - name: parse_number
+            join_date:
+                selector: "td:contains('Joined on') + td"
+                filters:
+                    - name: split
+                      args: " :::0"
+                    - name: parse_time

@@ -1,0 +1,79 @@
+# seedpool — 自动生成自 PT-depiler（tools/convert-definitions.go）。
+# schema: unit3d。已接入通用/专用适配器，待真实站点校准。
+aka:
+    - SP
+id: seedpool
+level_requirements:
+    - id: 1
+      name: User
+      privilege: 无限下载槽
+      ratio: 1
+    - id: 2
+      interval: P1M
+      name: Pool
+      privilege: 无限下载槽 发起求种 免疫HR 发送邀请
+      ratio: 1
+    - id: 3
+      interval: P3M
+      name: PowerPool
+      privilege: 无限下载槽 发起求种 应求求种 免疫HR 发送邀请
+      ratio: 1.25
+    - id: 4
+      interval: P6M
+      name: SuperPool
+      privilege: 访问邀请区 无限下载槽 发起求种 应求求种 免疫HR 站免 发送邀请
+      ratio: 1.5
+    - id: 5
+      interval: P9M
+      name: UberPool
+      privilege: 访问邀请区 无限下载槽 发起求种 应求求种 免疫HR 站免 发送邀请
+      ratio: 3
+    - id: 6
+      interval: P12M
+      name: MegaPool
+      privilege: 上传种子 访问邀请区 双倍计算上传量 无限下载槽 发起求种 应求求种 免疫HR 站免 发送邀请
+      ratio: 3
+    - id: 7
+      interval: P12M
+      name: GodPool
+      privilege: 上传种子 访问邀请区 双倍计算上传量 无限下载槽 发起求种 应求求种 免疫HR 站免 发送邀请
+      ratio: 5
+    - group_type: vip
+      id: 8
+      name: ProPool
+      privilege: 双倍计算上传量 无限下载槽 发起求种 应求求种 免疫HR 站免 发送邀请
+name: seedpool
+schema: unit3d
+selectors:
+    fields:
+        category:
+            data: categoryId
+            filters:
+                - args: 2=TV Show:::1=Movie:::6=Anime:::8=Sports:::5=Music:::9=Audiobook:::7=E-Book:::12=Hobby:::16=Software:::3=Game:::21=Music Production:::11=Other
+                  name: map
+            selector: :self
+tags:
+    - 综合
+timezone_offset: "+0000"
+urls:
+    - https://seedpool.org/
+user_info:
+    fields:
+        bonus:
+            text: N/A
+        bonus_per_hour:
+            text: N/A
+        seeding:
+            filters:
+                - name: parse_number
+            selectors:
+                - li.ratio-bar__uploaded a:has(i.fa-arrow-up) + a
+        seeding_size:
+            filters:
+                - args: '(?i)([\d.,]+\s*(?:[KMGTPE]i?B|Bytes))'
+                  name: regexp
+                - name: parse_size
+            selectors:
+                - a[href*='/active?seeding=include']
+                - "td:contains('Seedpool') + td"
+                - "dt:contains('Seedpool') + dd"

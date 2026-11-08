@@ -1,0 +1,168 @@
+# anthelion — 自动生成自 PT-depiler（tools/convert-definitions.go）。
+# schema: gazelle。已接入通用/专用适配器，待真实站点校准。
+aka:
+    - ANT
+description: Anthelion (ANT) is a Private site for MOVIES
+id: anthelion
+level_requirements:
+    - id: 1
+      name: User
+      privilege: Can download, upload, vote on requests, use advanced search, access top 10, and bookmark content.
+    - bonus: 5000
+      id: 2
+      interval: P2W
+      name: Member
+      privilege: Create & manage collections; Send invites
+      ratio: 0.8
+      uploaded: 0.5TiB
+    - bonus: 25000
+      id: 3
+      interval: P1M
+      name: Power User
+      privilege: Upload images; Access Top 10; Purchase Invites; Invite forums
+      ratio: 1
+      uploaded: 1TiB
+    - bonus: 25000
+      id: 4
+      interval: P3M
+      name: Fanatic
+      privilege: Can have 1 personal collage; Receives periodic invites (max 1)
+      ratio: 1
+      uploaded: 1TiB
+      uploads: 5
+    - bonus: 250000
+      id: 5
+      interval: P6M
+      name: Elite
+      privilege: Can have a up to 2 personal collages; Can edit film descriptions/trailers; Receives periodic invites (max 2)
+      ratio: 2.5
+      uploaded: 5TiB
+      uploads: 10
+    - bonus: 500000
+      id: 6
+      interval: P1Y
+      name: Guru
+      privilege: Immune from being put on ratio watch; Receives periodic invites (max 4)
+      ratio: 3
+      uploaded: 5TiB
+      uploads: 25
+    - bonus: 1000000
+      id: 7
+      interval: P2Y
+      name: Torrent Master
+      privilege: Can have a up to 3 personal collages; Can edit torrents
+      ratio: 3.5
+      uploaded: 10TiB
+      uploads: 50
+name: Anthelion
+schema: gazelle
+search_entry: /torrents.php
+selectors:
+    fields:
+        category:
+            attr: class
+            filters:
+                - args: cats_featurefilm=Feature Film:::cats_shortfilm=Short Film:::cats_miniseries=Miniseries:::cats_other=Other
+                  name: contains_map
+            selector: div[class^='tooltip cats_']
+        subtitle:
+            filters:
+                - name: collapse_space
+            selectors:
+                - .tags
+                - td:has(a[href*='torrents.php']) a:not(span a):last
+        title:
+            selectors:
+                - a[href*='torrents.php?id=']:first
+                - a[href*='torrents.php']:first
+tags:
+    - 电影
+timezone_offset: "+0000"
+urls:
+    - https://anthelion.me/
+user_info:
+    fields:
+        id:
+            attr: href
+            filters:
+                - args: id
+                  name: queryparam
+            selector: a.username[href*="user.php"]
+        name:
+            selector: a.username[href*="user.php"]
+        uploaded:
+            filters:
+                - name: parse_size
+            selector: "ul.stats li:contains('Uploaded:')"
+        downloaded:
+            filters:
+                - name: parse_size
+            selector: "ul.stats li:contains('Downloaded:')"
+        ratio:
+            filters:
+                - name: parse_number
+            selector: "ul.stats li:contains('Ratio:')"
+        bonus:
+            filters:
+                - name: parse_number
+            selector: a[href*='store.php']
+        bonus_per_hour:
+            filters:
+                - args: 'making ([\d.]+) Orbs'
+                  name: regexp
+            selector: h3.float_right
+        adoptions:
+            filters:
+                - name: parse_number
+            selector: "li:contains('Adopted: ') span"
+        join_date:
+            attr: title
+            filters:
+                - args: '[MMM d yyyy, HH:mm ''UTC'']'
+                  name: parse_time
+            selector: ul.stats li:contains('Joined:') span
+        last_access_at:
+            attr: title
+            filters:
+                - name: parse_time
+            selectors:
+                - ul.stats li:contains('Last seen') span
+                - ul.stats li:contains('Last Seen') span
+        seeding:
+            filters:
+                - name: parse_number
+            selector: response.seeding
+        seeding_size:
+            filters:
+                - name: parse_size
+            selector: 'li:contains(''Seeding Size: '') span'
+        level:
+            filters:
+                - args: 'Class:\s*(.+)'
+                  name: regexp
+            selector: "ul.stats li:contains('Class:')"
+    pages:
+        - path: /store.php
+          use_fields:
+            - id
+            - name
+            - bonus_per_hour
+        - path: /user.php
+          params:
+            id: "{id}"
+          use_fields:
+            - uploaded
+            - downloaded
+            - ratio
+            - join_date
+            - last_access_at
+            - adoptions
+            - seeding_size
+            - bonus
+            - level
+        - path: /ajax.php
+          format: json
+          params:
+            action: community_stats
+          use_fields:
+            - seeding

@@ -1,0 +1,118 @@
+# hares - NexusRabbit user_info selectors migrated from MoviePilot and covered by mock tests; dead site retained.
+# schema: nexusphp-compatible; detail page uses user.php?id.
+
+aka:
+    - 白兔
+    - 白兔俱乐部
+dead: true
+description: 2160p/4k 及以上的高清资源站点
+id: hares
+level_requirements:
+    - name: User
+    - downloaded: 100GB
+      id: 1
+      interval: P4W
+      name: Power User
+      privilege: 可以在邀请区回复；可以查看NFO文档；可以查看用户列表；可以请求续种； 可以查看排行榜
+      ratio: 2
+      seeding_bonus: 20000
+    - downloaded: 350GB
+      id: 2
+      interval: P8W
+      name: Elite User
+      privilege: 可以查看其它用户的种子历史(如果用户隐私等级未设置为"强")； 可以删除自己上传的字幕
+      ratio: 2.5
+      seeding_bonus: 50000
+    - downloaded: 500GB
+      id: 3
+      interval: P16W
+      name: Crazy User
+      privilege: 可以直接发布种子；可以发送邀请；可以在做种/下载/发布的时候选择匿名模式
+      ratio: 3
+      seeding_bonus: 200000
+    - downloaded: 1TB
+      id: 4
+      interval: P20W
+      name: Insane User
+      privilege: 得到两个邀请名额；可以查看普通日志
+      ratio: 3.5
+      seeding_bonus: 400000
+    - downloaded: 2TB
+      id: 5
+      interval: P25W
+      name: Veteran User
+      privilege: 得到四个邀请名额；可以查看其它用户的评论、帖子历史
+      ratio: 4
+      seeding_bonus: 600000
+    - downloaded: 4TB
+      id: 6
+      interval: P30W
+      is_kept: true
+      name: Extreme User
+      privilege: 得到六个邀请名额；可以更新过期的外部信息；可以查看Extreme User论坛。Extreme User用户封存后将永远保留账号
+      ratio: 4.5
+      seeding_bonus: 800000
+    - downloaded: 6TB
+      id: 7
+      interval: P40W
+      is_kept: true
+      name: Ultimate User
+      privilege: 得到八个邀请名额
+      ratio: 5
+      seeding_bonus: 1000000
+    - downloaded: 8TB
+      id: 8
+      interval: P52W
+      is_kept: true
+      name: Nexus Master
+      privilege: 得到十个邀请名额。Nexus Master用户会永远保留账号
+      ratio: 5.5
+      seeding_bonus: 1200000
+name: HaresClub
+schema: nexusphp
+tags:
+    - 影视
+    - 纪录片
+    - 综合
+urls:
+    - https://club.hares.top/
+user_info:
+    path: index.php
+    detail_path: user.php
+    fields:
+        bonus:
+            filters:
+                - name: parse_number
+            selectors:
+                - "div:contains('奶糖余额') + div"
+    detail_fields:
+        name:
+            selectors:
+                - ".layui-hares-user-info-right span:contains('用户名') a span"
+        level:
+            selectors:
+                - ".layui-hares-user-info-right span:contains('等级') b"
+        join_date:
+            filters:
+                - name: regexp
+                  args: '注册日期[：:]\s*([^\r\n]+)'
+                - name: parse_time
+            selectors:
+                - ".layui-hares-user-info-right span:contains('注册日期')"
+        uploaded:
+            filters:
+                - name: regexp
+                  args: '上传量[：:]\s*([\d.,]+\s*(?:[KMGTPE]i?B|Bytes|B))'
+                - name: parse_size
+            selectors:
+                - ".layui-hares-user-info-right span:contains('上传量')"
+        downloaded:
+            filters:
+                - name: regexp
+                  args: '下载量[：:]\s*([\d.,]+\s*(?:[KMGTPE]i?B|Bytes|B))'
+                - name: parse_size
+            selectors:
+                - ".layui-hares-user-info-right span:contains('下载量')"
+        ratio:
+            selectors:
+                - ".layui-hares-user-info-right span:contains('分享率') em"

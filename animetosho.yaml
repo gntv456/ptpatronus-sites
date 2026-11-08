@@ -1,0 +1,51 @@
+# animetosho — 自动生成自 PT-depiler（tools/convert-definitions.go）。
+# schema: 。selectors/user_info 若未列出则由 EnsureDefaults 自填校准默认。
+
+aka:
+    - AT
+    - アニメ等所
+description: AnimeTosho (AT) is an automated service that provides torrent files, magnet links and DDL for all anime releases
+id: animetosho
+name: AnimeTosho
+search_entry: /search
+search_param: q
+selectors:
+    fields:
+        category:
+            text: Anime
+        detail:
+            attr: href
+            selector: div.link a
+        download:
+            attr: href
+            selectors:
+                - div.links > a[href$=".torrent"]
+                - div.links > a[href^="magnet:?xt="]
+        leechers:
+            attr: title
+            filters:
+                - args: "Leechers: (\\d+)"
+                  name: regexp
+            selector: span[title*="Leechers"]
+        seeders:
+            attr: title
+            filters:
+                - args: "Seeders: (\\d+)"
+                  name: regexp
+            selector: span[title*="Seeders"]
+        size:
+            selector: div.size
+        time:
+            attr: title
+            filters:
+                - name: parse_time
+            selector: div.date
+        title:
+            selector: div.link a
+    rows:
+        selector: div.home_list_entry
+tags:
+    - 动画
+    - 漫画
+urls:
+    - https://animetosho.org/

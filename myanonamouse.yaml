@@ -1,0 +1,128 @@
+# myanonamouse — 自动生成自 PT-depiler（tools/convert-definitions.go）。
+# schema: tbdev。已接入通用/专用适配器，待真实站点校准。
+
+aka:
+    - MAM
+description: Friendliness, Warmth and Sharing
+id: myanonamouse
+level_requirements:
+    - id: 1
+      name: Mouse
+    - id: 2
+      name: User
+      privilege: Receive 1 request per month; Can have 50 unsatisfied torrents at maximum
+      ratio: 1
+    - id: 3
+      interval: P4W
+      name: Power User
+      privilege: Receive 2 requests per month; Can have 100 unsatisfied torrents at maximum
+      ratio: 2
+      uploaded: 25GB
+    - group_type: vip
+      id: 4
+      name: VIP
+      privilege: Receive 4 requests per month; Can have 150 unsatisfied torrents at maximum
+name: MyAnonamouse
+schema: tbdev
+search_entry: /tor/js/loadSearchJSONbasic.php
+search_param: tor[text]
+selectors:
+    fields:
+        category:
+            selector: catname
+        completed:
+            selector: times_completed
+        detail:
+            filters:
+                - args: /t/
+                  name: prepend
+            selector: id
+        download:
+            filters:
+                - args: /tor/download.php?tid=
+                  name: prepend
+            selector: id
+        leechers:
+            selector: leechers
+        seeders:
+            selector: seeders
+        size:
+            selector: size
+        subtitle:
+            selector: tags
+        time:
+            selector: added
+        title:
+            selector: title
+    rows:
+        selector: data
+tags:
+    - 电子书
+    - 有声书
+timezone_offset: "+0000"
+urls:
+    - https://www.myanonamouse.net/
+user_info:
+    pages:
+        - path: /jsonLoad.php?snatch_summary&notif
+          format: json
+          fields:
+            id:
+                selector: uid
+            name:
+                selector: username
+            ratio:
+                selector: ratio
+            bonus:
+                selector: seedbonus
+            uploaded:
+                filters:
+                    - name: parse_size
+                selector: uploaded_bytes
+            downloaded:
+                filters:
+                    - name: parse_size
+                selector: downloaded_bytes
+            level:
+                selector: classname
+            last_access_at:
+                filters:
+                    - name: unix_seconds
+                selector: update
+            seeding:
+                filters:
+                    - name: myanonamouse_seeding
+                selector: :self
+            seeding_size:
+                filters:
+                    - name: myanonamouse_seeding_size
+                selector: :self
+            uploads:
+                filters:
+                    - name: myanonamouse_uploads
+                selector: :self
+        - path: /u/{id}
+          fields:
+            join_date:
+                filters:
+                    - args: " (:::0"
+                      name: split
+                    - name: parse_time
+                selector: "td.rowhead:contains('Join'):contains('date') + td"
+            bonus_per_hour:
+                filters:
+                    - args: worth\s+([\d.]+)\s+per hour
+                      name: regexp
+                selector: "td.rowhead:contains('Points earning') + td"
+            true_uploaded:
+                filters:
+                    - name: parse_size
+                selector: "td.rowhead:contains('Real Uploaded') + td"
+            true_downloaded:
+                filters:
+                    - name: parse_size
+                selector: "td.rowhead:contains('Real Downloaded') + td"
+            true_ratio:
+                filters:
+                    - name: parse_number
+                selector: "td.rowhead:contains('Real share ratio') + td"

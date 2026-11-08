@@ -1,0 +1,126 @@
+# lst — 自动生成自 PT-depiler（tools/convert-definitions.go）。
+# schema: unit3d。通用适配器和定义级 mock 已覆盖自定义搜索、用户信息、时魔与做种体积；真实站点仍建议 live smoke。
+
+description: Something cool
+id: lst
+level_requirements:
+    - name: Leech
+    - id: 1
+      name: Crab
+      privilege: 5下载槽 上传种子
+      ratio: 0.4
+    - id: 2
+      interval: P1M
+      name: Goldfish
+      privilege: 10下载槽 上传种子
+      ratio: 0.6
+    - id: 3
+      interval: P2M
+      name: Lobster
+      privilege: 15下载槽 上传种子 发送邀请
+      ratio: 0.7
+    - id: 4
+      interval: P6M
+      name: Sailboat
+      privilege: 25下载槽 上传种子 发送邀请 站免
+      ratio: 1
+    - id: 5
+      interval: P1Y
+      name: Ship
+      privilege: 50下载槽 上传种子 发送邀请 站免 免疫HR
+      ratio: 1.5
+    - id: 6
+      interval: P2Y
+      name: Cargo Ship
+      privilege: 75下载槽 上传种子 发送邀请 站免 免疫HR
+      ratio: 2
+    - id: 7
+      interval: P3M
+      name: Dolphin
+      privilege: 20下载槽 上传种子 发送邀请 站免 自动通过候选
+      ratio: 1
+      uploads: 5
+    - id: 8
+      interval: P4M
+      name: Whale
+      privilege: 25下载槽 上传种子 发送邀请 站免 免疫HR 自动通过候选
+      ratio: 1
+      uploads: 10
+    - id: 9
+      interval: P1Y
+      name: Leviathan
+      privilege: 50下载槽 上传种子 发送邀请 站免 免疫HR 自动通过候选
+      ratio: 1.5
+      uploads: 15
+    - id: 10
+      interval: P2Y
+      name: Cthulhu
+      privilege: 75下载槽 上传种子 发送邀请 站免 免疫HR 自动通过候选
+      ratio: 2
+      uploads: 20
+name: LST
+schema: unit3d
+selectors:
+    fields:
+        category:
+            attr: title
+            selector: .torrent-search-row__category
+        completed:
+            selector: .torrent-search-row__stat--completed
+        detail:
+            attr: href
+            selector: .torrent-search-row__name > a
+        leechers:
+            selector: .torrent-search-row__stat--leechers
+        seeders:
+            selector: .torrent-search-row__stat--seeders
+        size:
+            attr: title
+            filters:
+                - name: parse_number
+            selector: .torrent-search-row__stat--size
+        title:
+            selector: .torrent-search-row__name > a
+    rows:
+        selector: .torrent-results__list > .torrent-search-row
+tags:
+    - 综合
+    - 影视
+timezone_offset: "+0000"
+urls:
+    - https://lst.gg/
+user_info:
+    fields:
+        bonus_per_hour:
+            filters:
+                - name: parse_number
+            selectors:
+                - "span.sidebar-stat__label:contains('Points per hour') + span"
+                - "span.sidebar-stat__label:contains('每小时点数') + span"
+                - "span.sidebar-stat__label:contains('每小時魔力') + span"
+        id:
+            selector: span.profile-hero__account-item > i.fa-hashtag ~ span.profile-hero__account-value
+        join_date:
+            filters:
+                - name: regexp
+                  args: (\d{4}-\d{2}-\d{2}(?:\s+\d{2}:\d{2}:\d{2})?)
+                - name: parse_time
+            selectors:
+                - "span.profile-hero__meta-item:contains('Registration date')"
+                - "span.profile-hero__meta-item:contains('注册日期')"
+                - "span.profile-hero__meta-item:contains('註冊日期')"
+        seeding_size:
+            filters:
+                - name: parse_size
+            selectors:
+                - "div.profile-mini-stat__label:contains('Seeding Size') + div"
+                - "div.profile-mini-stat__label:contains('Seeding size') + div"
+                - "div.profile-mini-stat__label:contains('做种体积') + div"
+                - "div.profile-mini-stat__label:contains('做種體積') + div"
+        uploads:
+            filters:
+                - name: parse_number
+            selectors:
+                - "div.profile-mini-stat__label:contains('Total uploads') + div"
+                - "div.profile-mini-stat__label:contains('总发布') + div"
+                - "div.profile-mini-stat__label:contains('總發佈') + div"

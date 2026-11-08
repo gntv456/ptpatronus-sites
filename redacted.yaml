@@ -1,0 +1,78 @@
+# redacted — 自动生成自 PT-depiler（tools/convert-definitions.go）。
+# schema: gazelle_jsonapi。API 用户字段 + community_stats 做种体积已翻译为可执行流程；真实站点仍建议 live smoke。
+aka:
+    - RED
+    - 红
+description: Redacted is a music-focused private tracker
+id: redacted
+legacy_urls:
+    - https://redacted.ch/
+level_requirements:
+    - id: 1
+      name: User
+    - id: 2
+      interval: P1W
+      name: Member
+      ratio: 0.65
+      uploaded: 10GB
+    - id: 3
+      interval: P2W
+      is_kept: true
+      name: Power User
+      privilege: Invites forums; Immunity from inactivity disabling
+      ratio: 0.65
+      uploaded: 25GB
+      uploads: 5
+    - id: 4
+      interval: P4W
+      is_kept: true
+      name: Elite
+      ratio: 0.65
+      uploaded: 100GB
+      uploads: 50
+    - id: 5
+      interval: P8W
+      is_kept: true
+      name: Torrent Master
+      privilege: Unlimited invites
+      ratio: 0.65
+      uploaded: 500GB
+      uploads: 500
+    - id: 6
+      interval: P8W
+      is_kept: true
+      name: Power TM
+      ratio: 0.65
+      uploaded: 500GB
+    - id: 7
+      interval: P8W
+      is_kept: true
+      name: Elite TM
+      ratio: 0.65
+      uploaded: 500GB
+name: Redacted
+schema: gazelle_jsonapi
+tags:
+    - 音乐
+timezone_offset: "+0000"
+urls:
+    - https://redacted.sh/
+user_info:
+    fields:
+        bonus:
+            text: N/A
+        bonus_per_hour:
+            text: N/A
+        seeding_size:
+            filters:
+                - name: parse_size
+            selectors:
+                - response.seedingsize
+    pages:
+        - path: /ajax.php
+          params:
+              action: community_stats
+              userid: "{id}"
+          format: json
+          use_fields:
+              - seeding_size

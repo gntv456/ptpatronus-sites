@@ -1,0 +1,141 @@
+# skyeysnow — 自动生成自 PT-depiler（tools/convert-definitions.go）。
+# schema: discuz。user_info.pages + 做种/发布补全已由专属适配器覆盖；真实站点仍建议 live smoke。
+
+aka:
+    - 天雪
+description: 这是一个高清动漫的完全非盈利论坛，高清动漫是一个很小的圈子 论坛方向为DVD/BDRip和BDMV&BDMV用字幕相关。
+id: skyeysnow
+level_requirements:
+    - bonus: 1000
+      id: 1
+      name: Lv.1 白露
+      privilege: 自定义头衔；允许发短消息；允许加好友；允许设置回帖奖励；允许参与点评；
+    - bonus: 3000
+      id: 2
+      name: Lv.2 秋分
+    - bonus: 5000
+      id: 3
+      name: Lv.3 霜降
+    - bonus: 10000
+      id: 4
+      name: Lv.4 小雪
+    - bonus: 30000
+      id: 5
+      name: Lv.5 大雪
+    - bonus: 100000
+      id: 6
+      name: Lv.6 小寒
+    - bonus: 300000
+      id: 7
+      name: Lv.7 大寒
+    - bonus: 1000000
+      id: 8
+      name: Lv.8 立春
+name: SkyeySnow
+schema: discuz
+search_entry: /forum.php
+search_param: search
+selectors:
+    fields:
+        category:
+            selector: td:nth-child(1)
+        completed:
+            selector: td:nth-child(7)
+        detail:
+            attr: href
+            selector: a[href^="/forum.php?mod=viewthread"]
+        download:
+            attr: href
+            selector: a[href^="/download.php?id="]
+        leechers:
+            selector: td:nth-child(6)
+        seeders:
+            selector: td:nth-child(5)
+        size:
+            filters:
+                - name: parse_size
+            selector: td:nth-child(4)
+        time:
+            filters:
+                - args: |-
+                    [yyyy-MM-dd HH:mm:ss yyyy-MM-dd
+                    HH:mm:ss]
+                  name: parse_time
+            selector: td:nth-child(3)
+        title:
+            attr: title
+            selector: td.torrent_title > a[title]
+    rows:
+        selector: table.torrents > tbody > tr
+tags:
+    - 动漫
+timezone_offset: "+0800"
+user_info:
+    pages:
+        - path: /
+          fields:
+            id:
+                attr: href
+                filters:
+                    - args: uid
+                      name: queryparam
+                selector: .vwmy a
+            name:
+                selector: .vwmy a
+        - path: /home.php
+          params:
+            mod: space
+            uid: "{id}"
+          fields:
+            uploaded:
+                filters:
+                    - args: '(?i)(?:上传量|上传|uploaded)[^0-9]*([\d.,]+\s*[KMGTPE]?i?B)'
+                      name: regexp
+                    - name: parse_size
+                selector: '#psts li:contains("上传"), #psts li:contains("Uploaded")'
+            downloaded:
+                filters:
+                    - args: '(?i)(?:下载量|下载|downloaded)[^0-9]*([\d.,]+\s*[KMGTPE]?i?B)'
+                      name: regexp
+                    - name: parse_size
+                selector: '#psts li:contains("下载"), #psts li:contains("Downloaded")'
+            true_uploaded:
+                filters:
+                    - args: '(?i)实际上传[^0-9]*([\d.,]+\s*[KMGTPE]?i?B)'
+                      name: regexp
+                    - name: parse_size
+                selector: '#psts li:contains("实际上传")'
+            true_downloaded:
+                filters:
+                    - args: '(?i)实际下载[^/]*\/\s*([\d.,]+\s*[KMGTPE]?i?B)'
+                      name: regexp
+                    - name: parse_size
+                selector: '#psts li:contains("实际下载")'
+            ratio:
+                filters:
+                    - args: '(?i)(?:分享率|ratio)[^0-9]*([\d.]+)'
+                      name: regexp
+                selector: ul.bbda
+            bonus:
+                filters:
+                    - name: parse_number
+                selector: '#ratio'
+            level:
+                filters:
+                    - args: '用户组\s*(.+)'
+                      name: regexp
+                selector: a[href='home.php?mod=spacecp&ac=usergroup']
+            join_date:
+                filters:
+                    - args: '(\d{4}-\d{2}-\d{2})'
+                      name: regexp
+                selector: '#pbbs > li'
+            last_access_at:
+                filters:
+                    - args: '最后访问\s*(.+)'
+                      name: regexp
+                    - name: parse_time
+                selector: "#pbbs > li:contains('最后访问')"
+urls:
+    - https://www.skyey2.com/
+    - https://skyeysnow.com/

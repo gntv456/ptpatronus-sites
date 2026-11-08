@@ -1,0 +1,335 @@
+# pttime — 自动生成自 PT-depiler（tools/convert-definitions.go）。
+# schema: nexusphp。selectors/user_info 若未列出则由 EnsureDefaults 自填校准默认。
+
+aka:
+    - PT时间
+categories:
+    - id: "401"
+      name: Movies(电影)
+    - id: "402"
+      name: TV Series(电视剧)
+    - id: "403"
+      name: TV Shows(综艺)
+    - id: "404"
+      name: Documentaries(纪录片)
+    - id: "405"
+      name: Sport(体育)
+    - id: "406"
+      name: Games(游戏及相关)
+    - id: "408"
+      name: Music(音乐、专辑、MV、演唱会)
+    - id: "409"
+      name: Art(曲艺、相声、小品、戏曲、舞蹈、歌剧、评书等)
+    - id: "411"
+      name: Knowledge(社科、文学、知识、技能、书刊、有声书等)
+    - id: "412"
+      name: School(应试、考级、职称、初中以上)
+    - id: "420"
+      name: IT(软硬件技术&教程、大数据、人工智能）
+    - id: "430"
+      name: Animate(动漫、卡通、二次元、漫画)
+    - id: "432"
+      name: Baby(婴幼、儿童、早教、小学以下)
+    - id: "440"
+      name: 9kg-步兵(步兵/无码)
+    - id: "441"
+      name: 9kg-骑兵(骑兵/有码)
+    - id: "442"
+      name: 9kg-III(三级片、限制级电影)
+    - id: "443"
+      name: 9kg-H漫(动漫、漫画)
+    - id: "444"
+      name: 9kg-H游(游戏及相关)
+    - id: "445"
+      name: 9kg-H书(书籍、有声书)
+    - id: "446"
+      name: 9kg-H图(写真、图片、私拍、短视频）
+    - id: "447"
+      name: 9kg-H音(ASMR、音频、音乐)
+    - id: "448"
+      name: 9kg-H综(综艺、综合、剪辑、其他等)
+    - id: "449"
+      name: 9kg-H同(男同、女同、人妖)
+    - id: "450"
+      name: Resource(素材、数据、图片、文档、模板)
+    - id: "451"
+      name: Software(软件、系统、 程序、APP等)
+    - id: "490"
+      name: Other(其它，确认上边分类无)
+    - id: "500"
+      name: AD(广告)
+description: PT时间
+id: pttime
+level_requirements:
+    - name: Peasant
+      name_aka:
+        - 婴儿
+    - id: 1
+      name: User
+      name_aka:
+        - 幼儿园
+      privilege: 新用户的默认级别。
+    - downloaded: 512GB
+      id: 2
+      interval: P4W
+      name: Power User
+      name_aka:
+        - 小学
+      privilege: 首次升级至此等级的用户将获得2个邀请名额。
+      ratio: 1.05
+    - downloaded: 2048GB
+      id: 3
+      interval: P8W
+      name: Elite User
+      name_aka:
+        - 初中
+      privilege: 首次升级至此等级的用户将获得2个邀请名额。
+      ratio: 1.55
+    - downloaded: 4096GB
+      id: 4
+      interval: P15W
+      name: Crazy User
+      name_aka:
+        - 高中
+      privilege: 首次升级至此等级的用户将获得2个邀请名额。
+      ratio: 2.05
+    - downloaded: 8192GB
+      id: 5
+      interval: P25W
+      name: Insane User
+      name_aka:
+        - 专科
+      privilege: 首次升级至此等级的用户将获得2个邀请名额。
+      ratio: 2.55
+    - downloaded: 16384GB
+      id: 6
+      interval: P52W
+      name: Veteran User
+      name_aka:
+        - 本科
+      privilege: 首次升级至此等级的用户将获得2个邀请名额。
+      ratio: 3.05
+    - downloaded: 25000GB
+      id: 7
+      interval: P80W
+      name: Extreme User
+      name_aka:
+        - 研究生
+      privilege: 该级别及以上将不再有账户必须180-360天内登录一次要求。首次升级至此等级的用户将获得2个邀请名额。
+      ratio: 3.55
+    - downloaded: 45000GB
+      id: 8
+      interval: P104W
+      name: Ultimate User
+      name_aka:
+        - 博士生
+      privilege: 首次升级至此等级的用户将获得5个邀请名额。
+      ratio: 4.05
+    - downloaded: 90000GB
+      id: 9
+      interval: P130W
+      name: Nexus Master
+      name_aka:
+        - 博士后
+      privilege: 首次升级至此等级的用户将获得10个邀请名额。
+      ratio: 4.55
+name: PTTime
+schema: nexusphp
+medal:
+    enabled: false
+    shop_path: medal.php
+selectors:
+    fields:
+        category:
+            attr: title
+            selectors:
+                - span.category
+        detail:
+            attr: href
+            filters:
+                - args: id
+                  name: queryparam
+                - args: /details.php?id=
+                  name: prepend
+            selectors:
+                - a[href*="download.php?id="]
+        download:
+            attr: href
+            selectors:
+                - a[href*="download.php?id="]
+    rows:
+        selector: table.torrents:last > tbody > tr
+tags:
+    - 影视
+    - 综合
+    - 成人
+timezone_offset: "+0800"
+urls:
+    - https://www.pttime.org/
+user_info:
+    path: index.php
+    user_torrent_list_api: "/getusertorrentlist.php?userid={id}&type={type}"
+    fields:
+        id:
+            attr: href
+            filters:
+                - name: queryparam
+                  args: id
+            selectors:
+                - "#info_block a[href*='userdetails.php'][href*='id=']:first"
+                - "a[href*='userdetails.php'][class*='Name']:first"
+                - "a[href*='userdetails.php']:first"
+        name:
+            selectors:
+                - "#info_block a[href*='userdetails.php'][href*='id=']:first"
+                - "a[href*='userdetails.php'][class*='Name']:first"
+                - "a[href*='userdetails.php']:first"
+        uploaded:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:上传量|上傳量|Uploaded)[\s\S]{0,160}?([\d.,]+\s*(?:[KMGTPE]i?B|Bytes|B))'
+                - name: parse_size
+            selectors:
+                - "#info_block"
+                - ".medium"
+                - "td.rowhead:contains('传输') + td"
+                - "td.rowhead:contains('傳送') + td"
+                - "td.rowhead:contains('Transfers') + td"
+        downloaded:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:下载量|下載量|Downloaded)[\s\S]{0,160}?([\d.,]+\s*(?:[KMGTPE]i?B|Bytes|B))'
+                - name: parse_size
+            selectors:
+                - "#info_block"
+                - ".medium"
+                - "td.rowhead:contains('传输') + td"
+                - "td.rowhead:contains('傳送') + td"
+                - "td.rowhead:contains('Transfers') + td"
+        ratio:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:分享率|Ratio)[\s\S]{0,120}?([\d.]+|无限|無限|Inf\.?|Infinity)'
+                - name: replace
+                  args: 无限:::9999
+                - name: replace
+                  args: 無限:::9999
+                - name: replace
+                  args: Infinity:::9999
+                - name: replace
+                  args: Inf.:::9999
+            selectors:
+                - "#info_block"
+                - ".medium"
+                - "td.rowhead:contains('传输') + td"
+        seeding:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:当前活动|当前做种|Torrents seeding|Current activity)[^0-9]{0,120}(\d+)'
+            selectors:
+                - "#info_block"
+                - ".medium"
+        bonus:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:魔力值|魔力|Karma Points)[\s\S]{0,120}?([\d.,]+)'
+                - name: parse_number
+            selectors:
+                - "td.rowhead:contains('魔力') + td"
+                - "td.rowhead:contains('Karma Points') + td"
+                - "td.rowfollow:contains('魔力')"
+                - "#info_block"
+                - ".medium"
+    detail_fields:
+        uploaded:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:上传量|上傳量|Uploaded)[\s\S]{0,160}?([\d.,]+\s*(?:[KMGTPE]i?B|Bytes|B))'
+                - name: parse_size
+            selectors:
+                - "td.rowhead:contains('传输') + td"
+                - "td.rowhead:contains('傳送') + td"
+                - "td.rowhead:contains('Transfers') + td"
+                # PTTime 无「传输」行——上传量聚合在「核心数据」行的 td.rowfollow 里：
+                # 「分享率: 1.495  上传量: 12.07TB  下载量: 8.07TB  魔力值: ...」
+                - "td.rowfollow:contains('分享率')"
+                - "td.rowfollow:contains('上传量')"
+        downloaded:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:下载量|下載量|Downloaded)[\s\S]{0,160}?([\d.,]+\s*(?:[KMGTPE]i?B|Bytes|B))'
+                - name: parse_size
+            selectors:
+                - "td.rowhead:contains('传输') + td"
+                - "td.rowhead:contains('傳送') + td"
+                - "td.rowhead:contains('Transfers') + td"
+                - "td.rowfollow:contains('分享率')"
+                - "td.rowfollow:contains('下载量')"
+        ratio:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:分享率|Ratio)[\s\S]{0,120}?([\d.]+|无限|無限|Inf\.?|Infinity)'
+                - name: replace
+                  args: 无限:::9999
+                - name: replace
+                  args: 無限:::9999
+                - name: replace
+                  args: Infinity:::9999
+                - name: replace
+                  args: Inf.:::9999
+            selectors:
+                - "td.rowhead:contains('传输') + td"
+                - "td.rowfollow:contains('分享率')"
+        level:
+            selectors:
+                - td.rowhead:contains('等级') + td > b
+                - td.rowhead:contains('等級')  + td > b
+                - td.rowhead:contains('Class')  + td > b
+                - "td.rowhead:contains('等级') + td"
+                - "td.rowhead:contains('等級') + td"
+                - "td.rowhead:contains('Class') + td"
+        join_date:
+            filters:
+                - name: regexp
+                  args: '(\d{4}[-/]\d{1,2}[-/]\d{1,2})'
+            selectors:
+                - "td.rowhead:contains('加入日期') + td"
+                - "td.rowhead:contains('Join'):contains('date') + td"
+        bonus:
+            filters:
+                # PTTime 魔力值聚合在「核心数据」rowfollow 行；parse_number 会误取该行首个数字
+                # （= 分享率 1.495），故必须正则锚定「魔力值」标签后的数值。
+                - name: regexp
+                  args: '(?i)(?:魔力值|魔力|Karma Points)[\s\S]{0,40}?([\d.,]+)'
+                - name: parse_number
+            selectors:
+                - "td.rowhead:contains('魔力') + td"
+                - "td.rowhead:contains('Karma Points') + td"
+                - "td.rowfollow:contains('魔力值')"
+                - "td.rowfollow:contains('分享率')"
+        seeding_size:
+            filters:
+                - name: parse_size
+            selectors:
+                - "td.rowhead:contains('当前做种') + td"
+                - "td.rowhead:contains('目前做種') + td"
+                - "td.rowhead:contains('Current Seeding') + td"
+                - "td.rowhead:contains('Seeding Size') + td"
+    pages:
+        - path: mybonus.php
+          fields:
+              bonus_per_hour:
+                  filters:
+                      - name: regexp
+                        args: '(?i)(?:能获取|能獲取|currently\s+getting)[^0-9]{0,60}([\d.,]+\.?\d*)'
+                      - name: parse_number
+                  selectors:
+                      - "td.text:contains('你当前每小时能获取')"
+                      - "div:contains('你当前每小时能获取')"
+                      - "td:contains('你当前每小时能获取')"
+                      - "td.text:contains('你當前每小時能獲取')"
+                      - "div:contains('你當前每小時能獲取')"
+                      - "td:contains('你當前每小時能獲取')"
+                      - "div:contains('currently getting')"
+                      - "td:contains('currently getting')"
+                      - "td[rowspan]"

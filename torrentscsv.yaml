@@ -1,0 +1,39 @@
+# torrentscsv — 自动生成自 PT-depiler（tools/convert-definitions.go）。
+# schema: 。selectors/user_info 若未列出则由 EnsureDefaults 自填校准默认。
+
+aka:
+    - TorrentsCSV
+description: Torrents.csv is a self-hostable, open source torrent search engine and database
+id: torrentscsv
+legacy_urls:
+    - https://torrents-csv.ml/
+name: Torrents-CSV
+search_entry: /service/search
+search_param: q
+selectors:
+    fields:
+        completed:
+            selector: completed
+        detail:
+            text: https://torrents-csv.com/
+        download:
+            filters:
+                - args: "magnet:?xt=urn:btih:"
+                  name: prepend
+            selector: infohash
+        leechers:
+            selector: leechers
+        seeders:
+            selector: seeders
+        size:
+            selector: size_bytes
+        time:
+            filters:
+                - name: unix_seconds
+            selector: created_unix
+        title:
+            selector: name
+    rows:
+        selector: torrents
+urls:
+    - https://torrents-csv.com/

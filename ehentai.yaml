@@ -1,0 +1,42 @@
+# ehentai — 搜索 selector 已按 PT-depiler 结构迁移，并由 GenericHTML mock 覆盖；torrent 弹窗下载仍建议 live smoke。
+
+aka:
+    - EH
+description: E-Hentai is a Public site for Hentai doujinshi, manga.
+id: ehentai
+name: E-Hentai
+search_entry: /torrents.php
+search_param: search
+selectors:
+    fields:
+        completed:
+            selector: td:nth-child(7)
+        detail:
+            attr: href
+            selector: a[href*='/g/']
+        download:
+            attr: href
+            selector: a[href*='/gallerytorrents.php?gid=']
+        leechers:
+            selector: td:nth-child(6)
+        seeders:
+            selector: td:nth-child(5)
+        size:
+            filters:
+                - name: parse_size
+            selector: td:nth-child(4)
+        time:
+            filters:
+                - name: parse_time
+            selector: td:first-child
+        title:
+            selector: a[href*='/gallerytorrents.php?gid=']
+    rows:
+        selector: table.itg > tbody > tr:has(td)
+tags:
+    - 漫画
+    - 成人
+timezone_offset: "+0000"
+urls:
+    - https://e-hentai.org/
+    - https://exhentai.org/

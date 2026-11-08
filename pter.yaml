@@ -1,0 +1,296 @@
+# pter — 自动生成自 PT-depiler（tools/convert-definitions.go）。
+# schema: nexusphp。selectors/user_info 若未列出则由 EnsureDefaults 自填校准默认。
+
+aka:
+    - PTerClub
+    - 猫站
+categories:
+    - id: "401"
+      name: 电影 (Movie)
+    - id: "404"
+      name: 电视剧 (TV Series)
+    - id: "403"
+      name: 动画 (Animation)
+    - id: "405"
+      name: 综艺 (TV Show)
+    - id: "413"
+      name: 音乐短片 (MV)
+    - id: "406"
+      name: 音乐 (Music)
+    - id: "418"
+      name: 舞台演出 (Stage Performance)
+    - id: "402"
+      name: 纪录片 (Documentary)
+    - id: "407"
+      name: 体育 (Sport)
+    - id: "408"
+      name: 电子书 (E-Book)
+    - id: "409"
+      name: 游戏 (Game)
+    - id: "410"
+      name: 软件 (Software)
+    - id: "411"
+      name: 学习 (Study)
+    - id: "412"
+      name: 其它 (Other)
+description: ＰＴ之友俱乐部
+id: pter
+legacy_urls:
+    - https://pter.club/
+    - https://pterclub.com/
+level_requirements:
+    - id: 1
+      name: 伯曼猫 User
+      privilege: 新用户的默认级别。
+    - downloaded: 50GB
+      id: 2
+      interval: P5W
+      name: 加菲猫 POWER USER
+      privilege: 可以直接发布种子；可以查看邀请区；可以上传字幕和删除自己上传的字幕
+      ratio: 1.05
+      seeding_bonus: 10000
+      uploads: 10
+    - downloaded: 120GB
+      id: 3
+      interval: P10W
+      name: 布偶猫 ELITE USER
+      privilege: 可以请求续种
+      ratio: 1.55
+      seeding_bonus: 30000
+      uploads: 20
+    - downloaded: 300GB
+      id: 4
+      interval: P24W
+      name: 雪鞋猫 CRAZY USER
+      privilege: 可以查看排行榜
+      ratio: 2.05
+      seeding_bonus: 80000
+      uploads: 30
+    - downloaded: 500GB
+      id: 5
+      interval: P32W
+      name: 暹罗猫 INSANE USER
+      privilege: 可以查看普通日志
+      ratio: 2.55
+      seeding_bonus: 150000
+      uploads: 40
+    - downloaded: 750GB
+      id: 6
+      interval: P40W
+      name: 安哥拉猫 VETERAN USER
+      privilege: 可以查看其它用户的评论、帖子历史；封存账号后，不会因不活跃原因被临时封禁
+      ratio: 3.05
+    - downloaded: 1024GB
+      id: 7
+      interval: P48W
+      name: 孟加拉猫 EXTREME USER
+      privilege: 可2次无条件不活跃解封，可以查看邀请树统计，初次升级赠送1枚永久邀请码
+      ratio: 3.55
+    - downloaded: 1536GB
+      id: 8
+      interval: P56W
+      name: 山东狮子猫 ULTIMATE USER
+      privilege: 追加1次无条件不活跃解封，可以查看邀请树图，初次升级赠送2枚永久邀请码
+      ratio: 4.05
+    - downloaded: 3072GB
+      id: 9
+      interval: P112W
+      is_kept: true
+      name: 四川简州猫 NEXUS MASTER
+      privilege: 用户不会因不活跃原因被临时封禁，初次升级赠送3枚永久邀请码
+      ratio: 4.55
+name: PTer
+schema: nexusphp
+selectors:
+    fields:
+        subtitle:
+            selectors:
+                - div > span:eq(0)
+        title:
+            selectors:
+                - a[href*='details.php?id='][title]
+                - a[href*='detailsgame.php?id='][title]
+                - a[href^="details.php?id="]
+                - a[href^="detailsgame.php?"]
+tags:
+    - 影视
+    - 综合
+urls:
+    - https://pterclub.net/
+user_info:
+    path: index.php
+    user_torrent_list_api: "/getusertorrentlistajax.php?userid={id}&type={type}"
+    fields:
+        id:
+            attr: href
+            filters:
+                - name: queryparam
+                  args: id
+            selectors:
+                - "#info_block a[href*='userdetails.php'][href*='id=']:first"
+                - "a[href*='userdetails.php'][class*='Name']:first"
+                - "a[href*='userdetails.php']:first"
+        name:
+            selectors:
+                - "#info_block a[href*='userdetails.php'][href*='id=']:first"
+                - "a[href*='userdetails.php'][class*='Name']:first"
+                - "a[href*='userdetails.php']:first"
+        uploaded:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:上传量|上傳量|Uploaded)[\s\S]{0,160}?([\d.,]+\s*(?:[KMGTPE]i?B|Bytes|B))'
+                - name: parse_size
+            selectors:
+                - "#info_block"
+                - ".medium"
+                - "td.rowhead:contains('传输') + td"
+                - "td.rowhead:contains('傳送') + td"
+                - "td.rowhead:contains('Transfers') + td"
+        downloaded:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:下载量|下載量|Downloaded)[\s\S]{0,160}?([\d.,]+\s*(?:[KMGTPE]i?B|Bytes|B))'
+                - name: parse_size
+            selectors:
+                - "#info_block"
+                - ".medium"
+                - "td.rowhead:contains('传输') + td"
+                - "td.rowhead:contains('傳送') + td"
+                - "td.rowhead:contains('Transfers') + td"
+        ratio:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:分享率|Ratio)[\s\S]{0,120}?([\d.]+|无限|無限|Inf\.?|Infinity)'
+                - name: replace
+                  args: 无限:::9999
+                - name: replace
+                  args: 無限:::9999
+                - name: replace
+                  args: Infinity:::9999
+                - name: replace
+                  args: Inf.:::9999
+            selectors:
+                - "#info_block"
+                - ".medium"
+                - "td.rowhead:contains('传输') + td"
+        bonus:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:猫粮|貓糧|魔力值|魔力|Karma Points)[\s\S]{0,120}?([\d.,]+)'
+                - name: parse_number
+            selectors:
+                - "#info_block"
+                - ".medium"
+                - "td.rowhead:contains('猫粮') + td"
+                - "td.rowhead:contains('貓糧') + td"
+                - "td.rowhead:contains('Karma Points') + td"
+                - "td.rowfollow:contains('猫粮')"
+                - "td.rowfollow:contains('貓糧')"
+        seeding:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:当前活动|当前做种|Torrents seeding|Current activity)[^0-9]{0,120}(\d+)'
+                - name: parse_number
+            selectors:
+                - "#info_block"
+                - ".medium"
+                - "#info_block a[href*='getusertorrentlist.php'][href*='type=seeding']"
+    detail_fields:
+        uploaded:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:上传量|上傳量|Uploaded)[\s\S]{0,160}?([\d.,]+\s*(?:[KMGTPE]i?B|Bytes|B))'
+                - name: parse_size
+            selectors:
+                - "td.rowhead:contains('传输') + td"
+                - "td.rowhead:contains('傳送') + td"
+                - "td.rowhead:contains('Transfers') + td"
+        downloaded:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:下载量|下載量|Downloaded)[\s\S]{0,160}?([\d.,]+\s*(?:[KMGTPE]i?B|Bytes|B))'
+                - name: parse_size
+            selectors:
+                - "td.rowhead:contains('传输') + td"
+                - "td.rowhead:contains('傳送') + td"
+                - "td.rowhead:contains('Transfers') + td"
+        ratio:
+            filters:
+                - name: regexp
+                  args: '(?i)(?:分享率|Ratio)[\s\S]{0,120}?([\d.]+|无限|無限|Inf\.?|Infinity)'
+                - name: replace
+                  args: 无限:::9999
+                - name: replace
+                  args: 無限:::9999
+                - name: replace
+                  args: Infinity:::9999
+                - name: replace
+                  args: Inf.:::9999
+            selectors:
+                - "td.rowhead:contains('传输') + td"
+        level:
+            attr: title
+            selectors:
+                - "td.rowhead:contains('等级') + td > img"
+                - "td.rowhead:contains('等級') + td > img"
+                - "td.rowhead:contains('Class') + td > img"
+        join_date:
+            filters:
+                - name: regexp
+                  args: '(\d{4}[-/]\d{1,2}[-/]\d{1,2})'
+            selectors:
+                - "td.rowhead:contains('加入日期') + td"
+                - "td.rowhead:contains('Join'):contains('date') + td"
+        bonus:
+            filters:
+                - name: parse_number
+            selectors:
+                - "td.rowhead:contains('猫粮') + td"
+                - "td.rowhead:contains('貓糧') + td"
+                - "td.rowhead:contains('Karma Points') + td"
+                - "td.rowfollow:contains('猫粮')"
+                - "td.rowfollow:contains('貓糧')"
+        seeding_size:
+            filters:
+                - name: parse_size
+            selectors:
+                - "td.rowhead:contains('做种大小') + td"
+                - "td.rowhead:contains('做種大小') + td"
+                - "td.rowhead:contains('当前做种') + td"
+                - "td.rowhead:contains('目前做種') + td"
+                - "td.rowhead:contains('Current Seeding') + td"
+                - "td.rowhead:contains('Seeding Size') + td"
+    pages:
+        - path: mybonus.php
+          fields:
+              bonus_per_hour:
+                  filters:
+                      - name: regexp
+                        args: '(?i)(?:能获取|能獲取|currently\s+getting)[^0-9]{0,60}([\d.,]+\.?\d*)'
+                      - name: parse_number
+                  selectors:
+                      - "td.text:contains('你当前每小时能获取')"
+                      - "div:contains('你当前每小时能获取')"
+                      - "td:contains('你当前每小时能获取')"
+                      - "td.text:contains('你當前每小時能獲取')"
+                      - "div:contains('你當前每小時能獲取')"
+                      - "td:contains('你當前每小時能獲取')"
+                      - "div:contains('currently getting')"
+                      - "td:contains('currently getting')"
+                      - "td[rowspan]"
+        - path: "torrents.php?incldead=1&spstate=0&inclbookmarked=0&check=prechecked&search={name}&search_area=3&search_mode=3"
+          fields:
+              uploads_add:
+                  attr: html
+                  filters:
+                      - name: pter_upload_search_count
+                  selectors:
+                      - ":self"
+        - path: "torrents.php?incldead=1&spstate=0&inclbookmarked=0&check=checked&search={name}&search_area=3&search_mode=3"
+          fields:
+              uploads_add:
+                  attr: html
+                  filters:
+                      - name: pter_upload_search_count
+                  selectors:
+                      - ":self"

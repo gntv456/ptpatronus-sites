@@ -1,0 +1,166 @@
+# broadcasthenet — 自动生成自 PT-depiler（tools/convert-definitions.go）。
+# schema: gazelle。已接入通用/专用适配器，待真实站点校准。
+aka:
+    - BTN
+description: BroadcastTheNet is a private tracker for TV shows.
+id: broadcasthenet
+level_requirements:
+    - bonus: 100000
+      id: 1
+      interval: P2W
+      name: Member
+      privilege: Can access the XXX forum.
+    - bonus: 250000
+      id: 2
+      interval: P1M
+      name: Power User
+      privilege: Has access to the Power User forum, Official and Unofficial Invites forums, Top 10 filters, and can access notifications.
+    - bonus: 500000
+      id: 3
+      interval: P3M
+      name: Extreme User
+      privilege: Has access to the Extreme User forum.
+    - bonus: 850000
+      id: 4
+      interval: P6M
+      name: Elite
+      privilege: Has access to the Elite forum and can set own Custom Title, and the ability to send invites purchased from the Lumens Store.
+    - bonus: 1500000
+      id: 5
+      interval: P9M
+      name: Guru
+      privilege: Has access to the Guru forum.
+    - bonus: 3000000
+      id: 6
+      interval: P1Y
+      name: Master
+      privilege: Has access to the Master forum.
+    - bonus: 250000000
+      id: 7
+      interval: P3Y
+      is_kept: true
+      name: Overlord
+      privilege: Has access to the Overlord forum, Custom Title, Unlimited Invites, and immunity from Inactivity Pruning.
+      seeding_time: P250000D
+      uploads: 500
+name: BroadcastTheNet
+schema: gazelle
+search_entry: /torrents.php
+search_param: artistname
+selectors:
+    fields:
+        category:
+            attr: title
+            selector: a[href*='filter_cat'] img
+        detail:
+            attr: href
+            selector: a[href*='torrents.php?id='][href*='torrentid=']
+        time:
+            filters:
+                - args: "Added:\\s*(.+)"
+                  name: regexp
+                - name: parse_time
+            selector: div.nobr:contains('Added:')
+        title:
+            attr: title
+            selector: span[style='float:none;']
+tags:
+    - 电视剧
+timezone_offset: "+0000"
+urls:
+    - https://broadcasthe.net/
+user_info:
+    fields:
+        id:
+            attr: href
+            filters:
+                - args: id
+                  name: queryparam
+            selector: a.username[href*="user.php"]
+        name:
+            selector: a.username[href*="user.php"]
+        bonus:
+            filters:
+                - name: parse_number
+            selector: ul.nobullet > li:contains('Bonus Points:') > a
+        bonus_per_hour:
+            filters:
+                - name: parse_number
+                - args: "24"
+                  name: divide
+            selector: ul.nobullet > li:contains('Per Day:')
+        downloaded:
+            filters:
+                - name: parse_size
+            selector: ul.nobullet > li:contains('Downloaded:')
+        join_date:
+            filters:
+                - name: parse_time
+            selector: ul.nobullet > li:contains('Joined:') > span
+        last_access_at:
+            attr: title
+            filters:
+                - name: parse_time
+            selector: ul.nobullet > li:contains('Last Seen:') > span
+        level:
+            filters:
+                - args: "User Class:\\s*(.+)"
+                  name: regexp
+            selector: ul.nobullet > li:contains('User Class:')
+        ratio:
+            text: N/A
+        seeding:
+            filters:
+                - name: parse_number
+            selector: ul.nobullet > li:contains('Seeding:')
+        seeding_size:
+            filters:
+                - name: parse_size
+            selector: ul.nobullet > li:contains('Seeding Size:')
+        seeding_time:
+            filters:
+                - args: 'Total Time Seeded:\s*([\d,]+)\s*Days'
+                  name: regexp
+                - args: "86400"
+                  name: multiply
+            selector: ul.nobullet > li:contains('Total Time Seeded:')
+        snatches:
+            attr: text_all
+            filters:
+                - args: 'Snatched:\s*(\d[\d,]*)'
+                  name: sum_matches
+            selector: "ul.nobullet > li:contains('Snatched:')"
+        total_traffic:
+            filters:
+                - name: parse_size
+            selector: ul.nobullet > li:contains('Total Traffic:')
+        uploaded:
+            filters:
+                - name: parse_size
+            selector: ul.nobullet > li:contains('Upload:')
+        uploads:
+            filters:
+                - name: parse_number
+            selector: ul.nobullet > li:contains('Uploaded:')
+    pages:
+        - path: /index.php
+          use_fields:
+            - id
+            - name
+        - path: /user.php
+          params:
+            id: "{id}"
+          use_fields:
+            - uploaded
+            - uploads
+            - downloaded
+            - level
+            - bonus
+            - bonus_per_hour
+            - join_date
+            - last_access_at
+            - seeding
+            - seeding_size
+            - seeding_time
+            - snatches
+            - total_traffic

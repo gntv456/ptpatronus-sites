@@ -1,0 +1,6 @@
+dead: true
+id: shike
+name: 拾刻
+schema: nexusphp
+urls:
+  - https://shike.pt

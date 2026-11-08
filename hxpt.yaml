@@ -1,0 +1,23 @@
+# 好学（hxpt.org）站点定义 —— 2026-11 改版：站点引擎由 NexusPHP 整体迁移到
+# FluxTorrent（Rust + Next.js，generator 标识），旧 .php 刮削选择器全部作废。
+#
+# 新站契约（按新服务器 /opt/fluxtorrent 源码校准，compat 层 apps/api/src/compat_http/）：
+#   - 搜索   GET /api/v1/compat/nexusphp/torrents.json?keyword=&page=&pagesize=
+#   - 用户   GET /api/v1/plugins/ptppUserInfo（PT-Plugin-Plus 口径聚合）
+#   - 下载   GET /api/v1/compat/nexusphp/download.php?id=&token=<fxr_ token>
+#   - HR/做种/信箱  GET /api/v1/open/me/{hr,seeding,messages}（ensureFluxTorrentDefaults 放行）
+#   - 兼容别名 takelogin.php→307 /auth/login、userdetails.php?token=、getrss.php
+#
+# 鉴权：Authorization: Token <fxo_ 开放 API Token>（网页端「我的 → API Token」签发，
+# 180 天可续期）；旧站 cookie 对兼容层不可用。凭据由 chain.credential 打包
+# token+passkey，解析见 schemas/fluxtorrent.go parseFluxTorrentCredential。
+# 抓取逻辑全部在代码适配器里（schema: fluxtorrent），本 YAML 不配置 selectors/user_info。
+# 旧 NexusPHP 版定义（takelogin/验证码/verifyAccess.php VIP 校验）随改版一并下线。
+id: hxpt
+name: 好学
+schema: fluxtorrent
+format: json
+urls:
+  - https://www.hxpt.org
+tags:
+  - 综合

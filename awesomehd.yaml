@@ -1,0 +1,13 @@
+# awesomehd — 自动生成自 PT-depiler（tools/convert-definitions.go）。
+# schema: gazelle。死站保留；通用 Gazelle mock 已覆盖用户信息、做种数与做种体积。
+
+aka:
+    - AHD
+dead: true
+id: awesomehd
+name: Awesome-HD
+schema: gazelle
+tags:
+    - 影视
+urls:
+    - https://awesome-hd.me/

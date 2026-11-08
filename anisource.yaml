@@ -1,0 +1,41 @@
+# anisource — 自动生成自 PT-depiler（tools/convert-definitions.go）。
+# schema: 。selectors/user_info 若未列出则由 EnsureDefaults 自填校准默认。
+
+dead: true
+description: Download anime for free. High quality HD raws from Raws-4U, スカーRaws team (4U-Project) and Leopard-Raws.
+id: anisource
+name: AniSource
+search_entry: /
+search_param: search
+selectors:
+    fields:
+        category:
+            selector: span.category
+        detail:
+            attr: href
+            selector: span.info > a
+        download:
+            attr: id
+            filters:
+                - args: "item_:::"
+                  name: replace
+                - args: "magnet:?xt=urn:btih:"
+                  name: prepend
+            selector: :self
+        time:
+            filters:
+                - name: anisource_time
+            selector: span.info > font:last-of-type
+        title:
+            attr: title
+            filters:
+                - args: "Download :::"
+                  name: replace
+            selector: span.info > a
+    rows:
+        selector: div.torrents > div[class^="item"]
+tags:
+    - Anime
+timezone_offset: "-0900"
+urls:
+    - https://asnet.pw/
